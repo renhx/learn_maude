@@ -1,0 +1,58 @@
+fmod SIMPLE-NAT is
+  sort Nat .
+  
+  op 0 : -> Nat .
+  op s : Nat -> Nat .
+  op _+_ : Nat Nat -> Nat [assoc comm] .
+
+  vars N M : Nat .
+
+  eq N + 0 = N .
+  eq N + s(M) = s(N + M) .
+endfm
+
+fmod PURSE is
+  protecting SIMPLE-NAT .
+  
+  sort Purse .
+  op empty : -> Purse .
+  op put : Nat Purse -> Purse .
+  
+  vars N M : Nat .
+  vars P : Purse .
+  eq put(0, empty) = empty .
+  eq put(N, put(M, P)) = put(N + M, P) .
+endfm
+--- red put(s(s(0)), put(s(0), empty)) .
+
+fmod ITEM-SET is
+  sort Item ItemSet .
+  subsort Item < ItemSet .
+
+  ops apple cake : -> Item .
+  op empty : -> ItemSet .
+  op __ : ItemSet ItemSet -> ItemSet [assoc comm id: empty] .
+endfm
+--- red apple cake cake .
+
+mod SHOPPING is
+  including PURSE .
+  including ITEM-SET .
+
+  sort Bag .
+  op <_,_> : Purse ItemSet -> Bag .
+  var N : Nat .
+  var P : Purse .
+  var S : ItemSet .
+
+  rl [buy-apple] : < put(s(s(N)), P) , S > => < put(N, P) , apple S > .
+  rl [buy-cake] : < put(s(s(s(s(N)))), P) , S > => < put(N, P) , cake S > .
+endm
+--- frew < put(s(s(s(s(s(s(s(0))))))), empty), empty > .
+--- frew < put(s(s(s(0))), empty), empty > .
+
+--- 4コインで変えるものは何？
+search < put(s(s(s(s(0)))), empty), empty > =>! < empty, S:ItemSet > .
+--- search < put(s(s(0)), empty), empty > =>! < empty, S:ItemSet > .
+--- rew < put(s(s(0)), empty) , apple cake > .
+--- search < put(s(s(0)), empty) , apple cake > =>! < empty , apple apple cake > .

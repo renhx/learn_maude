@@ -1,0 +1,69 @@
+fmod IDENTIFIER is
+  sort Id .
+  op nobody : -> Id .
+  op 0 : -> Id .
+  op s : Id -> Id .
+
+  eq s(s(s(s(s(0))))) = 0 .
+endfm
+
+mod DP is
+  protecting IDENTIFIER .
+  sorts Table Philosopher Fork Status .
+  subsort Philosopher < Table .
+  subsort Fork < Table .
+
+  op p : Bool Id Status Bool -> Philosopher [ctor] .
+  op f : Id Id -> Fork [ctor] .
+  ops eating thinking hungry : -> Status .
+  op __ : Table Table -> Table [assoc comm ctor] .
+
+  vars N M X : Id .
+
+  op init : -> Table .
+  rl [init] :
+  init => f(0, nobody)
+          f(s(0), nobody)
+          f(s(s(0)), nobody)
+          f(s(s(s(0))), nobody)
+          f(s(s(s(s(0)))), nobody)
+          p(false, 0, thinking, false)
+          p(false, s(0), thinking, false)
+          p(false, s(s(0)), thinking, false)
+          p(false, s(s(s(0))), thinking, false)
+          p(false, s(s(s(s(0)))), thinking, false) .
+
+  crl [pick-right] :
+     p(false, N, hungry, false) f(M, nobody)
+  => p(false, N, hungry, true) f(M, N)
+     if N == s(M) .
+
+  rl [pick-left] :
+     p(false, N, hungry, true) f(N, nobody)
+  => p(true, N, eating, true) f(N, N) .
+
+  --- デッドロックの回避
+  crl [put-right-if-cant-pick-left] :
+     p(false, N, hungry, true) f(M, N) f(N, X)
+  => p(false, N, hungry, false) f(M, nobody) f(N, X)
+     if N == s(M) .
+
+  rl [starve] :
+     p(false, N, thinking, false)
+  => p(false, N, hungry, false) .
+
+  crl [put-right] :
+     p(true, N, eating, true) f(M, N)
+  => p(true, N, eating, false) f(M, nobody)
+     if N == s(M) .
+
+  rl [put-left] :
+     p(true, N, eating, false) f(N, N)
+  => p(false, N, thinking, false) f(N, nobody) .
+endm
+
+--- Deadlock
+search init =>! T:Table .
+search init =>* f(0, s(0)) f(s(0), s(s(0))) f(s(s(0)), s(s(s(0)))) f(s(s(s(0))), s(s(s(s(0))))) f(s(s(s(s(0)))), 0) p(false, 0, hungry, true) p(false, s(0), hungry, true) p(false, s(s(0)), hungry, true) p(false, s(s(s(0))), hungry, true) p(false, s(s(s(s(0)))), hungry, true) .
+search init =>! f(0, s(0)) f(s(0), s(s(0))) f(s(s(0)), s(s(s(0)))) f(s(s(s(0))), s(s(s(s(0))))) f(s(s(s(s(0)))), 0) p(false, 0, hungry, true) p(false, s(0), hungry, true) p(false, s(s(0)), hungry, true) p(false, s(s(s(0))), hungry, true) p(false, s(s(s(s(0)))), hungry, true) .
+--- show search graph .

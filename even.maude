@@ -1,0 +1,9 @@
+fmod EVEN is
+  protecting NAT .
+  
+  op even? : Nat -> Bool .
+  var N : Nat .
+  
+  ceq even?(N) = true if (N rem 2) == 0 .
+  ceq even?(N) = false if (N rem 2) == 1 .
+endfm

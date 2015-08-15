@@ -1,0 +1,198 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	    Maude 2.6 built: Dec  9 2010 18:28:39
+	    Copyright 1997-2010 SRI International
+		   Sat Jul 19 19:15:41 2014
+==========================================
+search in RABBITS-WOLVES : p(r r r r r w w w w w, b(empty)) | p(empty, noboat)
+    | p(empty, noboat) =>+ P1:Place | P2:Place | p(r r r r r w w w w w, B) .
+
+Solution 1 (state 220)
+states: 221  rewrites: 15745 in 5ms cpu (6ms real) (2624604 rewrites/second)
+P1:Place --> p(empty, noboat)
+P2:Place --> p(empty, noboat)
+B --> b(empty)
+state 0, River: p(r r r r r w w w w w, b(empty)) | p(empty, noboat) | p(empty,
+    noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 1, River: p(r r r r r w w w w, b(w)) | p(empty, noboat) | p(empty,
+    noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 3, River: p(r r r r w w w w, b(r w)) | p(empty, noboat) | p(empty,
+    noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 6, River: p(r r r r w w w w, noboat) | p(empty, b(r w)) | p(empty,
+    noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 10, River: p(r r r r w w w w, noboat) | p(empty, noboat) | p(empty, b(r
+    w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 14, River: p(r r r r w w w w, noboat) | p(empty, noboat) | p(w, b(r))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 19, River: p(r r r r w w w w, noboat) | p(empty, b(r)) | p(w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 24, River: p(r r r r w w w w, b(r)) | p(empty, noboat) | p(w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 29, River: p(r r r r w w w, b(r w)) | p(empty, noboat) | p(w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 37, River: p(r r r w w w, b(r r w)) | p(empty, noboat) | p(w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 43, River: p(r r r w w w, noboat) | p(empty, b(r r w)) | p(w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 51, River: p(r r r w w w, noboat) | p(empty, noboat) | p(w, b(r r w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 61, River: p(r r r w w w, noboat) | p(empty, noboat) | p(r w, b(r w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 71, River: p(r r r w w w, noboat) | p(empty, noboat) | p(r r w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 80, River: p(r r r w w w, noboat) | p(empty, b(w)) | p(r r w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 89, River: p(r r r w w w, b(w)) | p(empty, noboat) | p(r r w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 97, River: p(r r r w w, b(w w)) | p(empty, noboat) | p(r r w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 106, River: p(r r r w w, noboat) | p(empty, b(w w)) | p(r r w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 113, River: p(r r r w w, noboat) | p(empty, noboat) | p(r r w, b(w w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 122, River: p(r r r w w, noboat) | p(empty, noboat) | p(r r w w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 130, River: p(r r r w w, noboat) | p(empty, b(w)) | p(r r w w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 137, River: p(r r r w w, b(w)) | p(empty, noboat) | p(r r w w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 143, River: p(r r w w, b(r w)) | p(empty, noboat) | p(r r w w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 149, River: p(r r w w, noboat) | p(empty, b(r w)) | p(r r w w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 154, River: p(r r w w, noboat) | p(empty, noboat) | p(r r w w, b(r w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 158, River: p(r r w w, noboat) | p(empty, noboat) | p(r r r w w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 161, River: p(r r w w, noboat) | p(empty, b(w)) | p(r r r w w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 165, River: p(r r w w, b(w)) | p(empty, noboat) | p(r r r w w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 169, River: p(r r w, b(w w)) | p(empty, noboat) | p(r r r w w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 172, River: p(r r w, noboat) | p(empty, b(w w)) | p(r r r w w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 176, River: p(r r w, noboat) | p(empty, noboat) | p(r r r w w, b(w w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 180, River: p(r r w, noboat) | p(empty, noboat) | p(r r r w w w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 182, River: p(r r w, noboat) | p(empty, b(w)) | p(r r r w w w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 184, River: p(r r w, b(w)) | p(empty, noboat) | p(r r r w w w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 186, River: p(r w, b(r w)) | p(empty, noboat) | p(r r r w w w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 189, River: p(r w, noboat) | p(empty, b(r w)) | p(r r r w w w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 190, River: p(r w, noboat) | p(empty, noboat) | p(r r r w w w, b(r w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 191, River: p(r w, noboat) | p(empty, noboat) | p(r r r r w w w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 192, River: p(r w, noboat) | p(empty, b(w)) | p(r r r r w w w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 195, River: p(r w, b(w)) | p(empty, noboat) | p(r r r r w w w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 198, River: p(r, b(w w)) | p(empty, noboat) | p(r r r r w w w, noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 201, River: p(r, noboat) | p(empty, b(w w)) | p(r r r r w w w, noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 204, River: p(r, noboat) | p(empty, noboat) | p(r r r r w w w, b(w w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 207, River: p(r, noboat) | p(empty, noboat) | p(r r r r w w w w, b(w))
+===[ crl BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2,
+    noboat) if #(S3) > 0 = true [label bank2river] . ]===>
+state 208, River: p(r, noboat) | p(empty, b(w)) | p(r r r r w w w w, noboat)
+===[ rl p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) | p(S2, noboat) |
+    BANK2 [label riverbank1] . ]===>
+state 209, River: p(r, b(w)) | p(empty, noboat) | p(r r r r w w w w, noboat)
+===[ crl p(S1 A1, b(S2)) | RIVER | BANK2 => p(S1, b(S2 A1)) | RIVER | BANK2 if
+    ((#r(S2 A1) >= #w(S2 A1) or #r(S2 A1) == 0) and #r(S1) >= #w(S1)) and #(S2)
+    < 3 = true [label bank1abord] . ]===>
+state 210, River: p(empty, b(r w)) | p(empty, noboat) | p(r r r r w w w w,
+    noboat)
+===[ crl p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) |
+    BANK2 if #(S2) > 0 = true [label bank1river] . ]===>
+state 212, River: p(empty, noboat) | p(empty, b(r w)) | p(r r r r w w w w,
+    noboat)
+===[ rl BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3,
+    b(S2)) [label riverbank2] . ]===>
+state 214, River: p(empty, noboat) | p(empty, noboat) | p(r r r r w w w w, b(r
+    w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 216, River: p(empty, noboat) | p(empty, noboat) | p(r r r r r w w w w, b(
+    w))
+===[ crl BANK1 | RIVER | p(S1, b(S2 A1)) => BANK1 | RIVER | p(S1 A1, b(S2)) if
+    (#r(S2) >= #w(S2) or #r(S2) == 0) and (#r(S1 A1) >= #w(S1 A1) or #r(S1 A1)
+    == 0) = true [label bank2getoff] . ]===>
+state 220, River: p(empty, noboat) | p(empty, noboat) | p(r r r r r w w w w w,
+    b(empty))
+
+Bye.

@@ -1,0 +1,12 @@
+fmod SIMPLE-NAT is
+  sort Nat .
+
+  op 0 : -> Nat .
+  op s : Nat -> Nat .
+  op plus : Nat Nat -> Nat .
+
+  vars N M : Nat .
+
+  eq plus(N, 0) = N .
+  eq plus(N, s(M)) = s(plus(N, M)) .
+endfm

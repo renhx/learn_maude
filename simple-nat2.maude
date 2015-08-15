@@ -1,0 +1,14 @@
+fmod SIMPLE-NAT2 is
+  sort Nat .
+  
+  op 0 : -> Nat .
+  op s : Nat -> Nat .
+  op _+_ : Nat Nat -> Nat [assoc comm] .
+
+  vars N M : Nat .
+
+  eq N + 0 = N .
+  eq N + s(M) = s(N + M) .
+endfm
+
+red s(0) + s(s(0)) + s(0) .

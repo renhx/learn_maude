@@ -1,0 +1,67 @@
+fmod ANIMAL is
+    protecting NAT .
+    sort Animal .
+    sort AnimalSet .
+    subsort Animal < AnimalSet .
+
+    ops r w : -> Animal .
+    op empty : -> AnimalSet .
+    op __ : AnimalSet AnimalSet -> AnimalSet [assoc comm id: empty] .
+    op # : AnimalSet -> Nat .
+    op #r : AnimalSet -> Nat .
+    op #w : AnimalSet -> Nat .
+    var A : Animal .
+    var S : AnimalSet .
+    
+    eq #(empty) = 0 .
+    eq #(A S) = #(S) + 1 .
+    eq #r(empty) = 0 .
+    eq #r(r S) = #r(S) + 1 .
+    eq #r(w S) = #r(S) .
+    eq #w(empty) = 0 .
+    eq #w(r S) = #w(S) .
+    eq #w(w S) = #w(S) + 1 .    
+endfm
+--- red #(r w w) .
+--- red #r(r w w) .
+--- red #w(r w w) .
+
+fmod RIVER is
+    protecting ANIMAL .
+    
+    sort River .
+    sort Place .
+    sort Boat .
+    subsort AnimalSet < Place .
+    subsort Boat < Place .
+
+    op noboat : -> Boat .
+    op b : AnimalSet -> Boat .
+    op p : AnimalSet Boat -> Place .
+    op _|_|_ : Place Place Place -> River .
+endfm
+
+mod RABBITS-WOLVES is
+    including RIVER .
+    vars A1 A2 : Animal .
+    vars S1 S2 S3 : AnimalSet .
+    vars BANK1 BANK2 RIVER P : Place .
+    var B : Boat .
+
+--- boat behaviour    
+    crl [bank1river] : p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) | BANK2 if #(S2) > 0 .
+    rl [riverbank2] : BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3, b(S2)) .
+    rl [riverbank1] : p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) |  p(S2, noboat) | BANK2 .
+    crl [bank2river] : BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2, noboat) if #(S3) > 0 .
+
+--- abord
+    crl [bank1abord] : p(A1 S1, b(S2)) | RIVER | BANK2 => p(S1, b(A1 S2)) | RIVER | BANK2 if (#(S2) < 3) and (#r(S1) >= #w(S1)) and (#r(A1 S2) >= #w(A1 S2) or #r(A1 S2) == 0).
+    crl [bank2abord] : BANK1 | RIVER | p(A1 S1, b(S2)) => BANK1 | RIVER | p(S1, b(A1 S2)) if (#(S2) < 3) and (#r(S1) >= #w(S1)) and (#r(A1 S2) >= #w(A1 S2) or #r(A1 S2) == 0).
+
+--- get off
+    crl [bank1getoff] : p(S1, b(A1 S2)) | RIVER | BANK2 => p(A1 S1, b(S2)) | RIVER | BANK2 if (#r(A1 S1) >= #w(A1 S1) or #r(A1 S1) == 0) and (#r(S2) >= #w(S2) or #r(S2) == 0) .
+    crl [bank2getoff] : BANK1 | RIVER | p(S1, b(A1 S2)) => BANK1 | RIVER | p(A1 S1, b(S2)) if (#r(A1 S1) >= #w(A1 S1) or #r(A1 S1) == 0) and (#r(S2) >= #w(S2) or #r(S2) == 0).
+endm
+
+search [1] p(r r r r r w w w w w, b(empty)) | p(empty, noboat) | p(empty, noboat) =>+ P1:Place | P2:Place | p(r r r r r w w w w w, B:Boat) .
+--- show path 220 .

@@ -1,0 +1,12 @@
+fmod NAT-SEQUENCE2 is
+  protecting NAT .
+  
+  sort Seq .
+  subsort Nat < Seq .
+  
+  op empty : -> Seq .
+  op __ : Seq Seq -> Seq [assoc id: empty] .
+endfm
+
+red 4 (5 (6 empty)) == (4 5) 6 empty .
+red 4 5 6 empty == (4 5) 6 .

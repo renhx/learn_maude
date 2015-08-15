@@ -1,0 +1,94 @@
+fmod ANIMAL is
+    protecting NAT .
+    sort Animal .
+    sort AnimalSet .
+    subsort Animal < AnimalSet .
+    var A : Animal .
+    var S : AnimalSet .
+
+    --- farmer, wolf, sheep, cabbage
+    ops f w s c : -> Animal .
+    op empty : -> AnimalSet .
+    op __ : AnimalSet AnimalSet -> AnimalSet [assoc comm id: empty] .
+
+    --- Counters
+    op #  : AnimalSet -> Nat .
+    eq #(empty) = 0 .
+    eq #(A S) = #(S) + 1 .
+
+    op #f : AnimalSet -> Nat .
+    eq #f(empty) = 0 .
+    eq #f(f S) = #f(S) + 1 .
+    eq #f(A S) = #f(S) .
+
+    op #w : AnimalSet -> Nat .
+    eq #w(empty) = 0 .
+    eq #w(w S) = #w(S) + 1 .
+    eq #w(A S) = #w(S) .
+
+    op #s : AnimalSet -> Nat .
+    eq #s(empty) = 0 .
+    eq #s(s S) = #s(S) + 1 .
+    eq #s(A S) = #s(S) .
+
+    op #c : AnimalSet -> Nat .
+    eq #c(empty) = 0 .
+    eq #c(c S) = #c(S) + 1 .
+    eq #c(A S) = #c(S) .
+
+    --- AnimalSetで悲劇が発生しないか(安全か?)
+    op safe? : AnimalSet -> Bool .
+    ceq safe?(S) = false if #f(S) == 0 and #w(S) > 0 and #s(S) > 0 . --- 農夫がおらず、狼と羊が居る
+    ceq safe?(S) = false if #f(S) == 0 and #s(S) > 0 and #c(S) > 0 . --- 農夫がおらず、羊とキャベツが居る
+    eq safe?(S) = true . --- その他のケース
+endfm
+--- red #(f w s c) .
+--- red #f(f f w s c f) .
+--- red #w(f w w s c f) .
+--- red #s(f s s s c f) .
+--- red #c(f c w s c f) .
+--- red safe?(empty) .    --- assert true
+--- red safe?(f) .        --- assert true
+--- red safe?(f w s c) .  --- assert true
+--- red safe?(w s c) .    --- assert false
+--- red safe?(w s) .      --- assert false
+--- red safe?(s c) .      --- assert false
+--- red safe?(w c) .      --- assert true
+
+fmod RIVER is
+    protecting ANIMAL .
+    sort River .
+    sort Place .
+    sort Boat .
+    subsort AnimalSet < Place .
+    subsort Boat < Place .
+
+    op noboat : -> Boat .
+    op b : AnimalSet -> Boat .
+    op p : AnimalSet Boat -> Place .
+    op _|_|_ : Place Place Place -> River .
+endfm
+
+mod FARMER-CROSS-THE-RIVER is
+    including RIVER .
+    vars A1 A2 : Animal .
+    vars S1 S2 S3 : AnimalSet .
+    vars BANK1 BANK2 RIVER P : Place .
+    var B : Boat .
+
+--- boat behaviour    
+    crl [bank1river] : p(S1, b(S2)) | p(S3, noboat) | BANK2 => p(S1, noboat) | p(S3, b(S2)) | BANK2 if #f(S2) > 0 .
+    rl [riverbank2] : BANK1 | p(S1, b(S2)) | p(S3, noboat) => BANK1 | p(S1, noboat) | p(S3, b(S2)) .
+    rl [riverbank1] : p(S1, noboat) | p(S2, b(S3)) | BANK2 => p(S1, b(S3)) |  p(S2, noboat) | BANK2 .
+    crl [bank2river] : BANK1 | p(S1, noboat) | p(S2, b(S3)) => BANK1 | p(S1, b(S3)) | p(S2, noboat) if #f(S3) > 0 .
+
+--- abord
+    crl [bank1abord] : p(A1 S1, b(S2)) | RIVER | BANK2 => p(S1, b(A1 S2)) | RIVER | BANK2 if #(S2) < 2 and safe?(S1) and safe?(A1 S2) .
+    crl [bank2abord] : BANK1 | RIVER | p(A1 S1, b(S2)) => BANK1 | RIVER | p(S1, b(A1 S2)) if #(S2) < 2 and safe?(S1) and safe?(A1 S2) .
+
+--- get off
+    crl [bank1getoff] : p(S1, b(A1 S2)) | RIVER | BANK2 => p(A1 S1, b(S2)) | RIVER | BANK2 if safe?(A1 S1) and safe?(S2) .
+    crl [bank2getoff] : BANK1 | RIVER | p(S1, b(A1 S2)) => BANK1 | RIVER | p(A1 S1, b(S2)) if safe?(A1 S1) and safe?(S2) .
+
+endm
+search [1] p(f w s c, b(empty)) | p(empty, noboat) | p(empty, noboat) =>+ P1:Place | P2:Place | p(f w s c, B:Boat) .

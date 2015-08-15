@@ -1,0 +1,19 @@
+fmod FIBONACCI-NUMBERS is
+  protecting INT .
+
+  op fib : Nat -> Int .
+  var N : Nat .
+  
+  eq fib(0) = 0 .
+  eq fib(1) = 1 .
+  ceq fib(N) = fib(N - 1) + fib(N - 2) if N > 1 .
+endfm
+
+red fib(0) .
+red fib(1) .
+red fib(2) .
+red fib(3) .
+red fib(4) .
+red fib(5) .
+red fib(6) .
+red fib(7) .

@@ -1,0 +1,37 @@
+fmod TOWER is
+    protecting NAT .
+    sort Disk .
+    sort Seq .
+    sort Columns .
+    subsort Disk < Seq .
+    
+    op d : Nat -> Disk .
+    op nil : -> Seq .
+    op __ : Seq Seq -> Seq [ assoc id: nil ] .
+    op _|_|_ : Seq Seq Seq -> Columns .
+endfm
+
+mod TOWER-OF-HANOI is
+    including TOWER .
+    
+    op init : Nat -> Seq .
+    vars S S1 S2 S3 : Seq .
+    vars N M : Nat .
+    var D : Disk .
+    
+    rl [init_0] : init(0) => d(0) .
+    rl [init_n] : init(s(N)) => init(N) d(s(N)) .
+    
+    rl [nil_s1s2] : D S1 | nil | S3 => S1 | D | S3 .
+    rl [nil_s1s3] : D S1 | S2 | nil => S1 | S2 | D .
+    rl [nil_s2s1] : nil | D S2 | S3 => D | S2 | S3 .
+    rl [nil_s2s3] : S1 | D S2 | nil => S1 | S2 | D .
+    rl [nil_s3s1] : nil | S2 | D S3 => D | S2 | S3 .
+    rl [nil_s3s2] : S1 | nil | D S3 => S1 | D | S3 .
+    crl [s1s2] : d(N) S1 | d(M) S2 | S3 => S1 | d(N) d(M) S2 | S3 if N < M .
+    crl [s1s3] : d(N) S1 | S2 | d(M) S3 => S1 | S2 | d(N) d(M) S3 if N < M .
+    crl [s2s1] : d(M) S1 | d(N) S2 | S3 => d(N) d(M) S1 | S2 | S3 if N < M .
+    crl [s2s3] : S1 | d(N) S2 | d(M) S3 => S1 | S2 | d(N) d(M) S3 if N < M .
+    crl [s3s1] : d(M) S1 | S2 | d(N) S3 => d(N) d(M) S1 | S2 | S3 if N < M .
+    crl [s3s2] : S1 | d(M) S2 | d(N) S3 => S1 | d(N) d(M) S2 | S3 if N < M .
+endm

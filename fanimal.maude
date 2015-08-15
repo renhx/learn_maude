@@ -1,0 +1,36 @@
+fmod ANIMAL is
+    protecting NAT .
+    sort Animal .
+    sort AnimalSet .
+    subsort Animal < AnimalSet .
+
+    ops r w c : -> Animal .
+    op empty : -> AnimalSet .
+    op __ : AnimalSet AnimalSet -> AnimalSet [assoc comm id: empty] .
+    op # : AnimalSet -> Nat .
+    op #r : AnimalSet -> Nat .
+    op #w : AnimalSet -> Nat .
+    op #c : AnimalSet -> Nat .
+    var A : Animal .
+    var S : AnimalSet .
+    
+    eq #(empty) = 0 .
+    eq #(A S) = #(S) + 1 .
+    eq #r(empty) = 0 .
+    eq #r(r S) = #r(S) + 1 .
+    eq #r(w S) = #r(S) .
+    eq #w(empty) = 0 .
+    eq #w(r S) = #w(S) .
+    eq #w(c S) = #w(S) .
+    eq #w(w S) = #w(S) + 1 .    
+
+    eq #c(empty) = 0 .
+    eq #c(r S) = #c(S) .
+    eq #c(c S) = #c(S) + 1 .
+    eq #c(w S) = #c(S) .    
+endfm
+red #(r w w) .
+red #r(r w w) .
+red #w(r w w c) .
+red #c(r w w c) .
+
